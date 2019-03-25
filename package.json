@@ -1,0 +1,10 @@
+{
+	"name": "SimPay-DB-Api",
+	"version": "1.0.0",
+	"author": "Rafał Więcek <r.wiecek@simpay.pl> (https://simpay.pl/)",
+	"description": "SimPay.pl DB API",
+	"main": "src/main.js",
+	"bugs": "r.wiecek@simpay.pl",
+	"homepage": "https://simpay.pl/",
+	"license": "Apache-2.0"
+}
