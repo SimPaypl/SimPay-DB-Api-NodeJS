@@ -1,204 +1,208 @@
-var crypto = require('crypto');
+/* eslint-disable class-methods-use-this */
+const crypto = require( 'crypto' );
 
 class SimPayDB {
+    constructor() {
+        this.error = false;
+        this.errorCode = 0;
 
-	constructor(){
-		this.error = false;
-		this.errorCode = 0;
+        this.apiKey = '';
 
-		this.apiKey = '';
+        this.status = '';
+        this.value = '';
+        this.valueGross = '';
+        this.control = '';
 
-		this.status = '';
-		this.value = '';
-		this.valueGross = '';
-		this.control = '';
+        this.transId = '';
 
-		this.transId = '';
+        this.valuePartner = '';
 
-		this.valuePartner = '';
+        this.userNumber = '';
+    }
 
-		this.userNumber = '';
-	}
+    parse( data ) {
+        if( typeof data.id === 'undefined' ) {
+            this.setError( true, 1 );
 
-	parse( data ){
+            return false;
+        }
 
-		if( typeof data[ 'id' ] === 'undefined' ){
-			this.setError( true , 1 );
-			
-			return false;
-		}
+        if( typeof data.status === 'undefined' ) {
+            this.setError( true, 1 );
 
-		if( typeof data[ 'status' ] === 'undefined' ){
-			this.setError( true , 1 );
-			
-			return false;
-		}
-		
-		if( typeof data[ 'valuenet' ] === 'undefined' ){
-			this.setError( true , 1 );
-			
-			return false;
-		}
+            return false;
+        }
 
-		if( typeof data[ 'sign' ] === 'undefined' ){
-			this.setError( true , 1 );
-			
-			return false;
-		}
+        if( typeof data.valuenet === 'undefined' ) {
+            this.setError( true, 1 );
 
-		this.status = String( data[ 'status' ] ).trim();
-		this.value =  String( data[ 'valuenet' ] ).trim();
-		this.valueGross = String( data[ 'valuenet_gross' ] ).trim();
+            return false;
+        }
 
-		if( typeof data['control'] !== 'undefined' ){
-			this.control = String( data[ 'control' ] ).trim();
-		}
+        if( typeof data.sign === 'undefined' ) {
+            this.setError( true, 1 );
 
-		if( typeof data['number_from'] !== 'undefined' ){
-			this.userNumber = String( data[ 'number_from' ] ).trim();
-		}
+            return false;
+        }
 
-		this.transId = String( data[ 'id' ] ).trim();
+        this.status = String( data.status ).trim();
+        this.value = String( data.valuenet ).trim();
+        this.valueGross = String( data.valuenet_gross ).trim();
 
-		this.valuePartner = String( data[ 'valuepartner' ] ).trim();
+        if( typeof data.control !== 'undefined' ) {
+            this.control = String( data.control ).trim();
+        }
 
-		var currentHash = crypto.createHash('sha256').update( this.transId + this.status + this.value + this.valuePartner + this.control + this.apiKey ).digest('hex');
+        if( typeof data.number_from !== 'undefined' ) {
+            this.userNumber = String( data.number_from ).trim();
+        }
 
-		if( currentHash != data[ 'sign' ] ){
-			this.setError( true , 3 );
-			
-			return false;
-		}
+        this.transId = String( data.id ).trim();
 
-		this.value = parseFloat( this.value.replace( ',' , '.' ) );
+        this.valuePartner = String( data.valuepartner ).trim();
 
-		if( this.value <= 0.00 ){
-			this.setError( true , 4 );
-		}
+        const currentHash = crypto.createHash( 'sha256' ).update( this.transId + this.status + this.value + this.valuePartner + this.control + this.apiKey ).digest( 'hex' );
 
-		this.valuePartner = parseFloat( this.valuePartner.replace( ',' , '.' ) );
+        if( currentHash !== data.sign ) {
+            this.setError( true, 3 );
 
-		if( this.valuePartner <= 0.00 ){
-			this.setError( true , 4 );
-		}
+            return false;
+        }
 
-		return true;
-	}
-	
-	isError(){
-		return this.error;
-	}
-	
-	getErrorText(){
-		switch( this.errorCode ){
-			case 0:
-				return 'No Error';
-			case 1:
-				return 'Missing Parameters';
-			case 2:
-				return 'No Sign Param';
-			case 3:
-				return 'Wrong Sign';
-			case 4:
-				return 'Wrong Amount Value';
-		}
-		
-		return '';
-	}
-	
-	setError( state , code ){
-		this.error = state;
-		this.errorCode = code;
-	}
+        this.value = parseFloat( this.value.replace( ',', '.' ) );
 
-	setApiKey( key ){
-		this.apiKey = key;
-	}
+        if( this.value <= 0.00 ) {
+            this.setError( true, 4 );
+        }
 
-	getStatus(){
-		return this.status;
-	}
+        this.valuePartner = parseFloat( this.valuePartner.replace( ',', '.' ) );
 
-	getValue(){
-		return this.value;
-	}
+        if( this.valuePartner <= 0.00 ) {
+            this.setError( true, 4 );
+        }
 
-	getValueGross(){
-		return this.valueGross;
-	}
+        return true;
+    }
 
-	getControl(){
-		return this.control;
-	}
+    isError() {
+        return this.error;
+    }
 
-	isTransactionPaid(){
-		return ( this.status == 'ORDER_PAYED' );
-	}
+    getErrorText() {
+        switch( this.errorCode ) {
+        case 0:
+            return 'No Error';
+        case 1:
+            return 'Missing Parameters';
+        case 2:
+            return 'No Sign Param';
+        case 3:
+            return 'Wrong Sign';
+        case 4:
+            return 'Wrong Amount Value';
+        default:
+            return 'No error';
+        }
+    }
 
-	getTransactionId(){
-		return this.transId;
-	}
+    setError( state, code ) {
+        this.error = state;
+        this.errorCode = code;
+    }
 
-	okTransaction(){
-		return 'OK';
-	}
+    setApiKey( key ) {
+        this.apiKey = key;
+    }
 
-	getValuePartner(){
-		return this.valuePartner;
-	}
+    getStatus() {
+        return this.status;
+    }
 
-	getUserNumber(){
-		return this.userNumber;
-	}
+    getValue() {
+        return this.value;
+    }
 
-	calculateRewardPartner( amount , provider ){
-		/*
-		$provider =
-		1 - Orange
-		2 - Play
-		3 - T-mobile
-		4 - Plus
-		*/
+    getValueGross() {
+        return this.valueGross;
+    }
 
-		if( amount <= 0 ){
-			return 0.00;
-		}
+    getControl() {
+        return this.control;
+    }
 
-		arrayComission = [];
+    isTransactionPaid() {
+        return ( this.status === 'ORDER_PAYED' );
+    }
 
-		switch( provider ){
-			case 1:{
-				arrayComission = [ 0.65 , 0.65 , 0.65 ];
+    getTransactionId() {
+        return this.transId;
+    }
 
-				break;
-			}
-			case 2:{
-				arrayComission = [ 0.55 , 0.65 , 0.70 ];
+    okTransaction() {
+        return 'OK';
+    }
 
-				break;
-			}
-			case 3:{
-				arrayComission = [ 0.60 , 0.60 , 0.60 ];
+    getValuePartner() {
+        return this.valuePartner;
+    }
 
-				break;
-			}
-			case 4:{
-				arrayComission = [ 0.50 , 0.50 , 0.50 ];
+    getUserNumber() {
+        return this.userNumber;
+    }
 
-				break;
-			}
-		}
+    calculateRewardPartner( amount, provider ) {
+        /*
+        $provider =
+        1 - Orange
+        2 - Play
+        3 - T-mobile
+        4 - Plus
+        */
 
-		if( amount < 9 ){
-			return ( amount * arrayComission[ 0 ] ).toFixed( 2 );
-		}
-		else if( amount < 25 ){
-			return ( amount * arrayComission[ 1 ] ).toFixed(2);
-		}
-		else{
-			return ( amount * arrayComission[ 2 ] ).toFixed(2);
-		}
-	}
+        if( amount <= 0 ) {
+            return 0.00;
+        }
+
+        let arrayComission = [];
+
+        switch( provider ) {
+        case 1: {
+            arrayComission = [ 0.65, 0.65, 0.65 ];
+
+            break;
+        }
+        case 2: {
+            arrayComission = [ 0.55, 0.65, 0.70 ];
+
+            break;
+        }
+        case 3: {
+            arrayComission = [ 0.60, 0.60, 0.60 ];
+
+            break;
+        }
+        case 4: {
+            arrayComission = [ 0.50, 0.50, 0.50 ];
+
+            break;
+        }
+        default: {
+            arrayComission = [ 0, 0, 0 ];
+
+            break;
+        }
+        }
+
+        if( amount < 9 ) {
+            return ( amount * arrayComission[ 0 ] ).toFixed( 2 );
+        }
+
+        if( amount < 25 ) {
+            return ( amount * arrayComission[ 1 ] ).toFixed( 2 );
+        }
+
+        return ( amount * arrayComission[ 2 ] ).toFixed( 2 );
+    }
 }
 
 module.exports = SimPayDB;

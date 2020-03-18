@@ -6,5 +6,194 @@
 	"main": "src/main.js",
 	"bugs": "r.wiecek@simpay.pl",
 	"homepage": "https://simpay.pl/",
-	"license": "Apache-2.0"
+	"license": "Apache-2.0",
+	"eslintConfig": {
+		"extends": [
+			"airbnb-base",
+			"plugin:import/errors",
+			"plugin:import/warnings"
+		],
+		"plugins": [
+			"import",
+			"sort-exports"
+		],
+		"env": {
+			"es6": true,
+			"browser": true
+		},
+		"rules": {
+			"no-await-in-loop": [
+				"off"
+			],
+			"no-plusplus": [
+				"off"
+			],
+			"no-loop-func": [
+				"off"
+			],
+			"object-property-newline": [
+				"error",
+				{
+					"allowAllPropertiesOnSameLine": false
+				}
+			],
+			"computed-property-spacing": [
+				"error",
+				"always"
+			],
+			"array-bracket-spacing": [
+				"error",
+				"always"
+			],
+			"keyword-spacing": [
+				"error",
+				{
+					"after": false,
+					"overrides": {
+						"return": {
+							"after": true
+						},
+						"const": {
+							"after": true
+						}
+					}
+				}
+			],
+			"comma-spacing": [
+				"error",
+				{
+					"before": false,
+					"after": true
+				}
+			],
+			"key-spacing": [
+				"error",
+				{
+					"align": {
+						"beforeColon": true,
+						"afterColon": true,
+						"on": "colon"
+					}
+				}
+			],
+			"sort-exports/sort-exports": [
+				"error",
+				{
+					"sortDir": "asc"
+				}
+			],
+			"semi": [
+				"error",
+				"always"
+			],
+			"comma-dangle": [
+				"error",
+				{
+					"arrays": "always-multiline",
+					"objects": "always-multiline",
+					"imports": "always",
+					"exports": "always",
+					"functions": "never"
+				}
+			],
+			"quotes": [
+				"error",
+				"single",
+				{
+					"allowTemplateLiterals": true
+				}
+			],
+			"indent": [
+				"error",
+				4
+			],
+			"no-console": "off",
+			"consistent-return": "off",
+			"object-curly-spacing": [
+				"error",
+				"always"
+			],
+			"linebreak-style": [
+				"error",
+				"unix"
+			],
+			"brace-style": [
+				"error",
+				"stroustrup"
+			],
+			"max-len": [
+				"error",
+				{
+					"code": 256,
+					"ignoreStrings": true
+				}
+			],
+			"eol-last": [
+				"error",
+				"always"
+			],
+			"no-unused-vars": [
+				"warn",
+				{
+					"argsIgnorePattern": "^_"
+				}
+			],
+			"no-continue": [
+				"off"
+			],
+			"no-restricted-syntax": [
+				"off"
+			],
+			"no-var": [
+				"off"
+			],
+			"one-var": [
+				"off"
+			],
+			"space-in-parens": [
+				"error",
+				"always"
+			],
+			"import/no-unresolved": [
+				2,
+				{
+					"commonjs": true,
+					"amd": true
+				}
+			],
+			"no-multiple-empty-lines": [
+				"error",
+				{
+					"max": 1
+				}
+			],
+			"import/named": 2,
+			"import/namespace": 2,
+			"import/default": 2,
+			"import/export": 2,
+			"import/order": [
+				"error",
+				{
+					"groups": [
+						"builtin",
+						"external",
+						"internal",
+						"index",
+						"sibling",
+						"parent"
+					],
+					"newlines-between": "always"
+				}
+			]
+		}
+	},
+	"devDependencies": {
+		"eslint": "^6.8.0",
+		"eslint-config-airbnb-base": "^14.0.0",
+		"eslint-plugin-import": "^2.20.1",
+		"eslint-plugin-sort-exports": "^0.2.0"
+	},
+	"dependencies": {
+		"crypto": "^1.0.1"
+	}
 }
